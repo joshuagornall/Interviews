@@ -1,5 +1,6 @@
 # Interviews
 > Your personal guide to Software Engineering technical interviews.
+## Open source is welcome! Add your alternative solutions in other programming languages in the cracking the coding interview folder!
 > 
 > Maintainer - [Joshua Gornall](https://github.com/joshuagornall)
 

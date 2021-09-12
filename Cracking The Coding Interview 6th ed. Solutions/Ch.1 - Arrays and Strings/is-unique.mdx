@@ -1,0 +1,207 @@
+# Read the Solution [Here](https://quastor.org/cracking-the-coding-interview/arrays-and-strings/is-unique)
+
+# Is Unique
+
+## Cracking the Coding Interview (CTCI) 1.1
+
+<br />
+
+## Question
+
+You are given a string. Write a function to determine if all of the characters in the string appear only once.
+
+Your function shouldn't care about capitalization. `A` is the same as `a`.
+
+```
+Input - "heLlo"
+Output - False
+
+Input - "hey"
+Output - True
+```
+
+<details>
+  <summary>Brute Force Solution</summary>
+
+  <br />
+
+For each character in the input string, compare it with every other character in the string and make sure they're different.
+
+<br />
+
+We implement this with two loops. The first loop iterates through every character in the string.
+
+<br />
+
+For each iteration, we will check to make sure that this character does not appear again in the string. We do this with the nested loop.
+
+<br />
+
+The time complexity is $$O(n^2)$$. The space complexity is $$O(n)$$ since we're creating a new string on line 2.
+
+```python
+def isUnique(s):
+    s = s.lower()
+    # c -> counter, l -> letter
+    for i1, c1  in enumerate(s):
+        for i2, c2 in enumerate(s):
+            if i1 == i2: # skip if same index
+                continue
+            if c1 == c2: # compare the characters
+                return False
+    return True
+```
+
+<br />
+
+<a href="https://repl.it/@quastortech/Brute-Force#main.py" target="_blank">Here's a Python 3 REPL with the solution and test cases.</a>
+
+</details>
+
+
+<br />
+
+<details>
+  <summary>Optimized Solution</summary>
+
+  
+  Instead of using two loops, we can use a set. As we iterate through the string, we check if the current letter is in the set.
+
+  <br />
+
+  If it is, then we return `False`.
+  
+  <br />
+
+  Otherwise, we add the current letter to the set and continue iterating.
+
+  <br />
+
+  The time complexity is $$O(n)$$ and the space complexity is $$O(n)$$.
+
+  ```python
+  def isUnique(s):
+      s = s.lower()
+      seen = set()
+      for c in s:
+          if c in seen:
+              return False
+          else:
+              seen.add(c)
+      return True
+  ```
+
+  <br />
+
+  <a href="https://repl.it/@quastortech/Optimized-Solution#main.py" target="_blank">Here's a Python 3 REPL with the solution and test cases.</a>
+</details>
+
+
+<br />
+
+## Follow Up
+
+What if you're not allowed to use any additional data structures?
+
+<br />
+
+<details>
+  <summary>Follow Up Solution</summary>
+
+
+The brute force solution doesn't use any extra data structures, but can we do better than $$O(n^2)$$ time complexity?
+
+<br />
+
+Instead of using two for loops, what if we sorted the string and then just checked if any of the characters were equivalent to the character before them?
+
+<br />
+
+We're taking advantage of the fact that if you sort the string, all identical characters will be placed right next to each other.
+
+<br />
+
+The time complexity is $$O(n \log n)$$ since that's how long it takes to sort the characters in a string.
+
+<br />
+
+The space complexity is $$O(n)$$ since we're creating a new string.
+
+```python
+def isUnique(s):
+    s = sorted(s.lower())
+    for i in range(1, len(s)):
+        if s[i] == s[i - 1]:
+            return False
+    return True
+```
+
+
+<a href="https://repl.it/@quastortech/Follow-Up-Solution#main.py" target="_blank">Here's a Python 3 REPL with the solution and test cases.</a>
+
+</details>
+
+<br />
+
+
+<details>
+  <summary>Optimized Follow Up Solution</summary>
+
+  <br />
+  
+
+Can we do even better than $$O(n \log n)$$ time complexity without using extra data structures? Yes we can!
+
+<br />
+
+We can do this with bit manipulation. We mantain an integer, `checker`, that keeps track of which character we've already seen in our string.
+
+<br />
+
+`checker` is acting like the set that we used in the previous **Optimized Solution**.
+
+<br />
+
+Integers in Python occupy 32 bits of space, so we'll use 26 bits of `checker` to keep track of which characters we've seen.
+
+<br />
+
+When we see a character, we flip the corresponding bit to 1 in `checker`. For `a` the corresponding bit would be bit 0. For `z` the corresponding bit would be bit 25.
+
+<br />
+
+When we want to check if we've already seen a specific character, we need to see if that character's bit is set to a `1` in `checker`. We can do that with a bitmask.
+
+<br />
+
+We start by setting `checker` to 0, because all the character bits should be set to `0` (we haven't seen any characters yet).
+
+<br />
+
+Then, we iterate through the string and first check if the character is in `checker` with our bitmask.
+
+<br />
+
+If it is, then we can return `False`. Otherwise, we set that character's bit to `1` in `checker` and continue iterating.
+
+<br />
+
+The time complexity is $$O(n)$$ and the space complexity is $$O(1)$$
+
+```python
+def isUnique(s):
+    checker = 0
+    for i in range(len(s)):
+        index = ord(s[i])
+        if 65 <= index <= 90: # check capitalization
+            index += 32
+        value = (checker & ((1 << index)))
+        if value > 0:
+            return False
+        checker =  checker | (1 << index)
+    return True
+```
+
+<a href="https://repl.it/@quastortech/Optimized-Follow-Up#main.py" target="_blank">Here's a Python 3 REPL with the solution and test cases.</a>
+
+ </details>
